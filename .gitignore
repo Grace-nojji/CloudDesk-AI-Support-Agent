@@ -1,0 +1,10 @@
+CloudDesk/
+.env
+
+app.ipynb
+app_01.py
+02_retrieval_and_evaluation.ipynb
+__pycache__/
+.gradio/
+
+clouddesk_dataset.zip
