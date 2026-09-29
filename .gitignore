@@ -6,5 +6,6 @@ app_01.py
 02_retrieval_and_evaluation.ipynb
 __pycache__/
 .gradio/
+app_02.py
 
 clouddesk_dataset.zip

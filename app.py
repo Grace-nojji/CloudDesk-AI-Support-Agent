@@ -6,7 +6,7 @@ import os
 
 def clouddesk_agent(text, number):
     if not text.strip():
-        return "", ""
+        return "", "", ""
 
     
     res = run_rag_pipeline(cfg, vstore, client, text )
@@ -27,8 +27,18 @@ cloud_theme = gr.themes.Base(
     secondary_hue="cyan",
     neutral_hue="slate" )
 
+css = """
+    .markdown-box {
+    background: #1f2937;
+    border-radius: 12px;
+    padding: 15px;
+    min-height: 300px;
+        }
+        """
+
 with gr.Blocks(
-    theme=cloud_theme
+    theme=cloud_theme,
+    css=css
 ) as demo:
 
     gr.Image("logo.PNG", width=350, show_label=False,
@@ -37,41 +47,70 @@ with gr.Blocks(
     gr.HTML(
         """
         <div style="
-    background: linear-gradient(135deg,#24245c,#4b4bb8);
-    padding: 10px;
-    border-radius: 10px;
-    text-align:center;
-    color:white;
-    margin-bottom:10px;
-    ">
-    <h1 style="
+        background: linear-gradient(135deg,#24245c,#4b4bb8);
+        padding: 10px;
+        border-radius: 10px;
+        text-align:center;
+        color:white;
+        margin-bottom:10px;
+        ">
+        <h1 style="
         margin-bottom:8px;
         font-size:32px;
-    ">
+        ">
         ☁ CloudDesk AI Support Engineer
-    </h1>
-    <p style="
+       </h1>
+       <p style="
         font-size:16px;
         opacity:0.9;
-    ">
+       ">
         Customer Support Retrieval-Augmented Generation (RAG)
         assistant
-    </p>
+        </p>
         </div>
         """
-    )
+        )
     
     with gr.Row():
 
         with gr.Column(scale=1):
 
+            gr.HTML("""
+            <div style="
+          background:#e7e7ff;
+          color:#4b4bb8;
+          padding:4px 10px;
+          border-radius:8px;
+          font-weight:bold;
+           display:inline-block;
+           margin-bottom:2px;
+         ">
+         Enter Query...  
+         </div>
+         """)
+
             query = gr.Textbox(
-            label="Enter Query...",
-            placeholder="Ask CloudDesk AI Support Engineer"
+                label= "Customer Inquiry",
+                show_label=False,
+            placeholder="e.g. How do I integrate Slack with CloudDesk?",
             )
 
+            gr.HTML("""
+                         <div style="
+                       background:#e7e7ff;
+                       color:#4b4bb8;
+                       padding:4px 10px;
+                       border-radius:8px;
+                       font-weight:bold;
+                        display:inline-block;
+                        margin-bottom:2px;
+                      ">
+                      Top-K Source Evidence...  
+                      </div>
+                      """)
             number = gr.Slider(
-                    label="Number of Supporting Sources",
+                    label= "Top-K Source Evidence",
+                    show_label=False,
                     minimum=1,
                     maximum=5,
                     step=1,
@@ -79,13 +118,18 @@ with gr.Blocks(
                 )
         
             submit = gr.Button(
-            "Submit Query",
+            " 🚀 Submit Query",
             variant="primary"
+            )
+
+            clear = gr.Button(
+            "🧹 Clear"
             )
 
             gr.Examples(
              examples=[
-                ["My SAML login stopped working after adding a new domain", 2],
+                ["My SAML login stopped working after adding a new domain", 1],
+                ["How do I integrate Slack with CloudDesk?", 2],
                 ["We connected CloudDesk to Slack but new tickets aren't showing", 3],
                 ["Why is my API failing with a 401 Unauthorized error?", 4],
                 ["How do I manage API keys and rate limits for my team?", 5],
@@ -95,19 +139,42 @@ with gr.Blocks(
               )
 
 
-        with gr.Column(scale=1.5):
+        with gr.Column(scale=1):
+                   
+            
+            with gr.Column(elem_classes="markdown-box"):
+                answer = gr.Markdown(
+                value="Awaiting query..."
+                )
 
-            answer = gr.Textbox(
-            label="Answer"
-             )
-
-            confidence = gr.Textbox(
-            label="Confidence Level"
+            gr.HTML("""
+                              <div style="
+                              background:#e7e7ff;
+                              color:#4b4bb8;
+                              padding:4px 10px;
+                              border-radius:8px;
+                              font-weight:bold;
+                              display:inline-block;
+                       ">
+                             Confidence Level
+                        </div>""")
+            confidence = gr.Textbox(show_label=False
             )
 
-            source = gr.Textbox(
-            label="Source Evidence",
-            lines=7
+            gr.HTML("""
+                              <div style="
+                              background:#e7e7ff;
+                              color:#4b4bb8;
+                              padding:4px 10px;
+                              border-radius:8px;
+                              font-weight:bold;
+                              display:inline-block;
+                       ">
+                             📌 Source Evidence
+                        </div>""")
+            source = gr.Markdown(
+            label="📌 Source Evidence" 
+            #show_label=False,
             )
 
 
@@ -124,6 +191,16 @@ with gr.Blocks(
     ]
      )
 
-PORT = int(os.environ.get("PORT", 7860))
-demo.launch(share=False, allowed_paths=["./"], server_name="0.0.0.0",
-            server_port=PORT) 
+    clear.click(
+    fn=lambda: ("", "Awaiting query...", "","", 3),
+    inputs=[],
+    outputs=[
+        query,
+        answer,
+        confidence,
+        source,
+        number
+    ]
+    )
+
+demo.launch(share=False, allowed_paths=["./"]) 
