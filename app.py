@@ -123,4 +123,5 @@ with gr.Blocks(
     ]
      )
 
-demo.launch(share=False, allowed_paths=["./"]) 
+demo.launch(share=False, allowed_paths=["./"], server_name="0.0.0.0",
+            server_port=10000) 
