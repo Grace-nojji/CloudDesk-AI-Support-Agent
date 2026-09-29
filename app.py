@@ -37,8 +37,6 @@ css = """
         """
 
 with gr.Blocks(
-    theme=cloud_theme,
-    css=css
 ) as demo:
 
     gr.Image("logo.PNG", width=350, show_label=False,
@@ -203,4 +201,11 @@ with gr.Blocks(
     ]
     )
 
-demo.launch(share=False, allowed_paths=["./"]) 
+PORT = int(os.environ.get("PORT", 7860))
+
+demo.launch(share=False,
+            allowed_paths=["./"],
+            theme=cloud_theme,
+            css=css,
+            server_name="0.0.0.0",
+            server_port=PORT) 
