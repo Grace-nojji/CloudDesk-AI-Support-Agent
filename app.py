@@ -1,6 +1,7 @@
 import gradio as gr
 from retrieval_pipeline import *
 from retrieve_eval import *
+import os
 
 
 def clouddesk_agent(text, number):
@@ -123,5 +124,6 @@ with gr.Blocks(
     ]
      )
 
+PORT = int(os.environ.get("PORT", 7860))
 demo.launch(share=False, allowed_paths=["./"], server_name="0.0.0.0",
-            server_port=10000) 
+            server_port=PORT) 
