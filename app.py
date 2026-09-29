@@ -6,7 +6,7 @@ import os
 
 def clouddesk_agent(text, number):
     if not text.strip():
-        return "", "", ""
+        return "", "",""
 
     
     res = run_rag_pipeline(cfg, vstore, client, text )
@@ -26,15 +26,6 @@ cloud_theme = gr.themes.Base(
     primary_hue="pink",
     secondary_hue="cyan",
     neutral_hue="slate" )
-
-css = """
-    .markdown-box {
-    background: #1f2937;
-    border-radius: 12px;
-    padding: 15px;
-    min-height: 300px;
-        }
-        """
 
 with gr.Blocks(
 ) as demo:
@@ -139,13 +130,11 @@ with gr.Blocks(
 
         with gr.Column(scale=1):
                    
-            
-            with gr.Column(elem_classes="markdown-box"):
                 answer = gr.Markdown(
                 value="Awaiting query..."
                 )
 
-            gr.HTML("""
+                gr.HTML("""
                               <div style="
                               background:#e7e7ff;
                               color:#4b4bb8;
@@ -156,10 +145,10 @@ with gr.Blocks(
                        ">
                              Confidence Level
                         </div>""")
-            confidence = gr.Textbox(show_label=False
+                confidence = gr.Textbox(show_label=False
             )
 
-            gr.HTML("""
+                gr.HTML("""
                               <div style="
                               background:#e7e7ff;
                               color:#4b4bb8;
@@ -170,10 +159,10 @@ with gr.Blocks(
                        ">
                              📌 Source Evidence
                         </div>""")
-            source = gr.Markdown(
-            label="📌 Source Evidence" 
-            #show_label=False,
-            )
+                source = gr.Markdown(
+                label="📌 Source Evidence" 
+                #show_label=False,
+                  )
 
 
     submit.click(
@@ -203,9 +192,8 @@ with gr.Blocks(
 
 PORT = int(os.environ.get("PORT", 7860))
 
-demo.launch(share=False,
+demo.launch(share=True,
             allowed_paths=["./"],
             theme=cloud_theme,
-            css=css,
             server_name="0.0.0.0",
             server_port=PORT) 
